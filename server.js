@@ -24,7 +24,12 @@ app.get('/scrape-lb', async (req, res) => {
     try {
         const searchUrl = `https://letterboxd.com/search/films/${encodeURIComponent(title)}/`;
         const { data } = await axios.get(searchUrl, {
-            headers: { 'User-Agent': 'Mozilla/5.0' }
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Referer': 'https://letterboxd.com/'
+            }
         });
         const $ = cheerio.load(data);
         const filmPath = $('.film-detail-content a').first().attr('href');
@@ -35,7 +40,12 @@ app.get('/scrape-lb', async (req, res) => {
 
         const filmUrl = `https://letterboxd.com${filmPath}`;
         const filmPage = await axios.get(filmUrl, {
-            headers: { 'User-Agent': 'Mozilla/5.0' }
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Referer': searchUrl
+            }
         });
         const $$ = cheerio.load(filmPage.data);
         const rating = $$('.average-display a').text().trim();
