@@ -102,7 +102,7 @@ async function openMovieDetails(movieId) {
    dir. ${director} (${releaseYear})
 </p>
                 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-center">
+                <div class="grid grid-cols-3 gap-4 mb-8 text-center">
                     <div class="bg-gray-800/50 p-4 rounded-2xl border border-gray-700">
                         <div class="text-yellow-500 font-black text-2xl">${movie.vote_average.toFixed(1)}</div>
                         <div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">TMDB</div>
@@ -114,10 +114,6 @@ async function openMovieDetails(movieId) {
                     <div id="rtBox" class="bg-gray-800/50 p-4 rounded-2xl border border-gray-700">
                         <div class="text-red-500 font-black text-2xl animate-pulse">...</div>
                         <div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">ROTTEN</div>
-                    </div>
-                    <div id="lbBox" class="bg-gray-800/50 p-4 rounded-2xl border border-green-600/30">
-                        <div class="text-green-500 font-black text-2xl animate-pulse italic">...</div>
-                        <div class="text-[10px] text-gray-400 uppercase font-bold tracking-widest italic">LB ANALİZ</div>
                     </div>
                 </div>
 
@@ -143,7 +139,6 @@ async function openMovieDetails(movieId) {
 async function fetchOtherScores(imdbId, title, year) {
     const imdbBox = document.querySelector('#imdbBox div');
     const rtBox = document.querySelector('#rtBox div');
-    const lbBox = document.querySelector('#lbBox div');
 
     // OMDb İşlemi
     let omdbUrl = imdbId 
@@ -162,22 +157,6 @@ async function fetchOtherScores(imdbId, title, year) {
     
     imdbBox.classList.remove('animate-pulse');
     rtBox.classList.remove('animate-pulse');
-
-    // Letterboxd İşlemi (Kendi server'ına selam veriyorsun)
-    try {
-        const lbRes = await fetch(`/scrape-lb?title=${encodeURIComponent(title)}`);
-        const lbData = await lbRes.json();
-        
-        if (lbData.success) {
-            lbBox.innerText = lbData.score;
-            lbBox.style.color = "#00e054";
-        } else {
-            lbBox.innerText = "N/A";
-        }
-    } catch (e) {
-        lbBox.innerText = "N/A";
-    }
-    lbBox.classList.remove('animate-pulse');
 }
 
 // --- 5. DİĞER FONKSİYONLAR ---
