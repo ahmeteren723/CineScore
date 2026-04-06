@@ -6,7 +6,16 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
-const PORT = 3000;
+const path = require('path');
+
+// Statik dosyaları (HTML, JS, CSS) bulunduğun klasörden servis et
+app.use(express.static(path.join(__dirname)));
+
+// Ana sayfaya girildiğinde index.html'i gönder
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.get('/scrape-lb', async (req, res) => {
     const { title } = req.query;
     
@@ -39,6 +48,8 @@ app.get('/scrape-lb', async (req, res) => {
     }
 });
 
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-    console.log(`🚀 BACA TÜTÜYOR: http://localhost:${PORT} adresinde server hazır aslan!`);
+    console.log(`🚀 BACA TÜTÜYOR: Sunucu ${PORT} portunda hazır aslan!`);
 });
