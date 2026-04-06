@@ -5,6 +5,10 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
 // --- 1. MOTORU BAŞLAT ---
+
+const backBtn = document.getElementById('backBtn');
+
+
 async function getTrendingMovies() {
     if (backBtn) backBtn.classList.add('hidden');
     try {
@@ -232,7 +236,7 @@ document.getElementById('searchInput').addEventListener('keypress', async (e) =>
 
 getTrendingMovies();
 // --- 7. NAVİGASYON VE GERİ BUTONU ---
-const backBtn = document.getElementById('backBtn');
+
 
 if (backBtn) {
     backBtn.onclick = () => {
