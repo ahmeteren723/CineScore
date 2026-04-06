@@ -161,7 +161,7 @@ async function fetchOtherScores(imdbId, title, year) {
 
     // Letterboxd İşlemi (Kendi server'ına selam veriyorsun)
     try {
-        const lbRes = await fetch(`http://localhost:3000/scrape-lb?title=${encodeURIComponent(title)}`);
+        const lbRes = await fetch(`/scrape-lb?title=${encodeURIComponent(title)}`);
         const lbData = await lbRes.json();
         
         if (lbData.success) {
