@@ -2,54 +2,56 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 
-const path = require('path');
-
-// Statik dosyaları (HTML, JS, CSS) bulunduğun klasörden servis et
+// --- 1. STATİK DOSYALARI SERVİS ET ---
+// Bu satır index.html, app.js ve style.css dosyalarını internete açar
 app.use(express.static(path.join(__dirname)));
 
-// Ana sayfaya girildiğinde index.html'i gönder
+// Ana sayfaya (/) gelindiğinde index.html dosyasını gönder
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// --- 2. LETTERBOXD SCRAPER (SENİN ESKİ KODUN) ---
 app.get('/scrape-lb', async (req, res) => {
-    const { title } = req.query;
-    
-    // İsmi temizle
-    const slug = title.toLowerCase()
-        .replace(/[^a-z0-9 ]/g, '')
-        .replace(/\s+/g, '-');
-
-    const url = `https://letterboxd.com/film/${slug}/`;
-    
-    // TERMINALE YAZDIR (Burayı izle aslan)
-    console.log(`🔍 Denenen Adres: ${url}`);
+    const title = req.query.title;
+    if (!title) return res.json({ success: false, message: "Film adı lazım aslan!" });
 
     try {
-        const { data } = await axios.get(url, {
+        const searchUrl = `https://letterboxd.com/search/films/${encodeURIComponent(title)}/`;
+        const { data } = await axios.get(searchUrl, {
             headers: { 'User-Agent': 'Mozilla/5.0' }
         });
         const $ = cheerio.load(data);
-        const rating = $('meta[name="twitter:data2"]').attr('content');
-        
+        const filmPath = $('.film-detail-content a').first().attr('href');
+
+        if (!filmPath) {
+            return res.json({ success: false, message: "Film bulunamadı." });
+        }
+
+        const filmUrl = `https://letterboxd.com${filmPath}`;
+        const filmPage = await axios.get(filmUrl, {
+            headers: { 'User-Agent': 'Mozilla/5.0' }
+        });
+        const $$ = cheerio.load(filmPage.data);
+        const rating = $$('.average-display a').text().trim();
+
         if (rating) {
-            res.json({ success: true, score: rating.split(' ')[0] });
+            res.json({ success: true, score: rating });
         } else {
-            console.log("❌ Sayfa geldi ama puan etiketi bulunamadı.");
-            res.json({ success: false });
+            res.json({ success: false, message: "Puan yok." });
         }
     } catch (error) {
-        console.log(`🚫 Hata: ${error.response?.status || error.message}`);
-        res.json({ success: false });
+        res.json({ success: false, error: error.message });
     }
 });
 
+// --- 3. PORT AYARI ---
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
     console.log(`🚀 BACA TÜTÜYOR: Sunucu ${PORT} portunda hazır aslan!`);
 });
