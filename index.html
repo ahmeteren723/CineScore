@@ -1,0 +1,57 @@
+index.html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmScore | Derin Sinema Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Sitenin o karanlık ve derin havası için özel bir arka plan rengi */
+        body { background-color: #0f172a; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="text-gray-100 font-sans leading-normal tracking-normal"></body>
+
+    <nav class="p-6 border-b border-gray-800 glass sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <h1 class="text-3xl font-extrabold text-red-600 tracking-tighter cursor-pointer mb-4 md:mb-0" onclick="location.reload()">
+                FILMSCORE
+            </h1>
+            <div class="relative w-full md:w-1/2">
+                <input type="text" id="searchInput" 
+                    class="w-full bg-gray-900 border border-gray-700 text-white rounded-full py-3 px-6 pl-12 focus:outline-none focus:border-red-600 transition-all"
+                    placeholder="Film, yönetmen veya oyuncu ara...">
+                <div class="absolute left-4 top-3.5 text-gray-500">
+                    🔍
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-10">
+        <div class="flex items-center gap-4 mb-8">
+            <button id="backBtn" class="hidden bg-gray-800 hover:bg-red-600 text-white p-2 rounded-full transition-all duration-300 shadow-lg shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </button>
+            
+            <h2 id="mainTitle" class="text-2xl font-bold border-l-4 border-red-600 pl-4 text-gray-300">
+                Popüler Keşifler
+            </h2>
+        </div>
+        
+        <div id="moviesGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            <div class="text-gray-500 italic">Yükleniyor aslan, bekle...</div>
+        </div>
+    </main>
+    <div id="movieModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-[#1a1d23]/80 bg-opacity-90 backdrop-blur-sm">
+        <div class="glass max-w-5xl w-full max-h-[90vh] overflow-y-auto rounded-3xl border border-gray-800 relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-bold z-50">✕</button>
+            <div id="modalContent" class="p-8 flex flex-col md:flex-row gap-10">
+                </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
